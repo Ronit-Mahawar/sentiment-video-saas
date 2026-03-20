@@ -1,5 +1,6 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import tseslint from "typescript-eslint";
+import prettier from "eslint-plugin-prettier";
 
 const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
@@ -9,15 +10,25 @@ export default tseslint.config(
   {
     ignores: [".next"],
   },
-  ...compat.extends("next/core-web-vitals"),
+
+  ...compat.extends(
+    "next/core-web-vitals",
+    "prettier" // disables conflicting rules
+  ),
+
   {
     files: ["**/*.ts", "**/*.tsx"],
+    plugins: {
+      prettier,
+    },
     extends: [
       ...tseslint.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
       ...tseslint.configs.stylisticTypeChecked,
     ],
     rules: {
+      "prettier/prettier": "error",
+
       "@typescript-eslint/array-type": "off",
       "@typescript-eslint/consistent-type-definitions": "off",
       "@typescript-eslint/consistent-type-imports": [
@@ -35,6 +46,7 @@ export default tseslint.config(
       ],
     },
   },
+
   {
     linterOptions: {
       reportUnusedDisableDirectives: true,
@@ -44,5 +56,5 @@ export default tseslint.config(
         projectService: true,
       },
     },
-  },
+  }
 );
