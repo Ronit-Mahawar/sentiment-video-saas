@@ -85,7 +85,7 @@ function UploadVideo({ apiKey, onAnalysis }: UploadVideoProps) {
       <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 p-10">
         <input
           type="file"
-          accept="video/mov,video/mp4,video/avi"
+          accept="video/quicktime,video/mp4,video/avi"
           className="hidden"
           id="video-upload"
           onChange={(e) => {

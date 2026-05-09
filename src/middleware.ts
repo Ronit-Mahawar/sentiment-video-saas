@@ -1,16 +1,16 @@
-import { auth } from "./server/auth";
+import NextAuth from "next-auth";
 
-export default auth((req) => {
-    const isAuthenticated = !!req.auth;
-    console.log("middle")
+import { authConfig } from "./server/auth/auth.config";
 
-    if(!isAuthenticated){
-        const newUrl= new URL('/login',req.url);
-        return Response.redirect(newUrl);
-    }
-})
+export default NextAuth(authConfig).auth((req) => {
+  const isAuthenticated = !!req.auth;
+
+  if (!isAuthenticated) {
+    const newUrl = new URL("/login", req.url);
+    return Response.redirect(newUrl);
+  }
+});
 
 export const config = {
-    matcher: ['/'],
-}
-
+  matcher: ["/"],
+};

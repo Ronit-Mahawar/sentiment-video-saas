@@ -27,30 +27,30 @@ interface InferenceProps {
 }
 
 export type Ananlysis = {
-  utternces: Array<{
+  utterances: Array<{
     start_time: number;
     end_time: number;
     text: string;
-    emotions: Array<{lable: string; confidence: number}>;
-    sentiments : Array<{lable: string; confidence: number}>;
+    emotions: Array<{label: string; confidence: number}>;
+    sentiments : Array<{label: string; confidence: number}>;
   }>;
 }
 
 export function Inference({ quota }: InferenceProps) {
   const [analysis, setAnalysis] = useState<Ananlysis | null>(
     {
-      utternces: [
+      utterances: [
         {
           start_time: 0,
           end_time: 5,
           text: "Hello everyone, welcome to today's presentation.",
           emotions: [
-            { lable: "joy", confidence: 0.72 },
-            { lable: "neutral", confidence: 0.25 },
+            { label: "joy", confidence: 0.72 },
+            { label: "neutral", confidence: 0.25 },
           ],
           sentiments: [
-            { lable: "positive", confidence: 0.68 },
-            { lable: "neutral", confidence: 0.20 },
+            { label: "positive", confidence: 0.68 },
+            { label: "neutral", confidence: 0.20 },
           ],
         },
         {
@@ -58,11 +58,11 @@ export function Inference({ quota }: InferenceProps) {
           end_time: 10,
           text: "I'm really excited to share this new product with you all.",
           emotions: [
-            { lable: "joy", confidence: 0.85 },
-            { lable: "surprise", confidence: 0.12 },
+            { label: "joy", confidence: 0.85 },
+            { label: "surprise", confidence: 0.12 },
           ],
           sentiments: [
-            { lable: "positive", confidence: 0.91 },
+            { label: "positive", confidence: 0.91 },
           ],
         },
         {
@@ -70,13 +70,13 @@ export function Inference({ quota }: InferenceProps) {
           end_time: 15,
           text: "However, we did encounter some challenges during development.",
           emotions: [
-            { lable: "fear", confidence: 0.34 },
-            { lable: "sadness", confidence: 0.28 },
-            { lable: "neutral", confidence: 0.35 },
+            { label: "fear", confidence: 0.34 },
+            { label: "sadness", confidence: 0.28 },
+            { label: "neutral", confidence: 0.35 },
           ],
           sentiments: [
-            { lable: "negative", confidence: 0.45 },
-            { lable: "neutral", confidence: 0.40 },
+            { label: "negative", confidence: 0.45 },
+            { label: "neutral", confidence: 0.40 },
           ],
         },
         {
@@ -84,12 +84,12 @@ export function Inference({ quota }: InferenceProps) {
           end_time: 20,
           text: "The team worked really hard to overcome these obstacles.",
           emotions: [
-            { lable: "joy", confidence: 0.55 },
-            { lable: "neutral", confidence: 0.30 },
+            { label: "joy", confidence: 0.55 },
+            { label: "neutral", confidence: 0.30 },
           ],
           sentiments: [
-            { lable: "positive", confidence: 0.62 },
-            { lable: "neutral", confidence: 0.25 },
+            { label: "positive", confidence: 0.62 },
+            { label: "neutral", confidence: 0.25 },
           ],
         },
         {
@@ -97,12 +97,12 @@ export function Inference({ quota }: InferenceProps) {
           end_time: 25,
           text: "Thank you for your attention.",
           emotions: [
-            { lable: "neutral", confidence: 0.65 },
-            { lable: "joy", confidence: 0.30 },
+            { label: "neutral", confidence: 0.65 },
+            { label: "joy", confidence: 0.30 },
           ],
           sentiments: [
-            { lable: "positive", confidence: 0.58 },
-            { lable: "neutral", confidence: 0.35 },
+            { label: "positive", confidence: 0.58 },
+            { label: "neutral", confidence: 0.35 },
           ],
         },
       ],
@@ -112,35 +112,35 @@ export function Inference({ quota }: InferenceProps) {
 
 
   const getAverageScore = () => {
-    if(!analysis?.utternces.length) return null;
+    if(!analysis?.utterances.length) return null;
 
     // Agregate all score 
      const emotionScores: Record<string, number[]> = {};
      const sentimentScores: Record<string, number[]> = {};
 
-      analysis.utternces.forEach((utterene)=>{
-        utterene.emotions.forEach((emotion)=>{    
-          if(!emotionScores[emotion.lable]) emotionScores[emotion.lable] = [];
-          emotionScores[emotion.lable]!.push(emotion.confidence);
+      analysis.utterances.forEach((utterance)=>{
+        utterance.emotions.forEach((emotion)=>{    
+          if(!emotionScores[emotion.label]) emotionScores[emotion.label] = [];
+          emotionScores[emotion.label]!.push(emotion.confidence);
 
         })
-        utterene.sentiments.forEach((sentiment)=>{    
-          if(!sentimentScores[sentiment.lable]) sentimentScores[sentiment.lable] = [];
-          sentimentScores[sentiment.lable]!.push(sentiment.confidence);
+        utterance.sentiments.forEach((sentiment)=>{    
+          if(!sentimentScores[sentiment.label]) sentimentScores[sentiment.label] = [];
+          sentimentScores[sentiment.label]!.push(sentiment.confidence);
 
         })
       })
 
       //Calculate average
       const avgEmotions = Object.entries(emotionScores).map(
-        ([lable, scores])=>({
-          lable,
+        ([label, scores])=>({
+          label,
           confidence: scores.reduce((a,b)=>a+b,0)/scores.length,
         }),
       ); 
       const avgSentiments = Object.entries(sentimentScores).map(
-        ([lable, scores])=>({
-          lable,
+        ([label, scores])=>({
+          label,
           confidence: scores.reduce((a,b)=>a+b,0)/scores.length,
         }),
       ); 
@@ -162,18 +162,18 @@ export function Inference({ quota }: InferenceProps) {
       <h2 className="text-lg font-medium text-slate-800">Inference</h2>
       <UploadVideo onAnalysis={setAnalysis} apiKey={quota.secretKey} />
       <h2 className="mt-2 text-sm text-slate-800">Overall Analysis</h2>
-      {true ? (
+      {averages ? (
         <div className="flex h-fit w-full flex-wrap items-center justify-center gap-4 rounded-xl border border-gray-200 p-4 sm:gap-8 sm:px-6">
           <div className="flex flex-col items-center">
             <span className="text-sm">Primary emotions</span>
-            <span className="text-[40px]">{EMOTION_EMOJI[averages?.topEmotion?.lable!]}</span>
+            <span className="text-[40px]">{EMOTION_EMOJI[averages?.topEmotion?.label!]}</span>
             <span className="text-sm text-gray-500">{averages?.topEmotion?.confidence.toFixed(3)}({(averages?.topEmotion?.confidence! * 100).toFixed(2)}%)</span>
 
 
           </div>
           <div className="flex flex-col items-center">
             <span className="text-sm">Primary sentiments</span>
-            <span className="text-[40px]">{SENTIMENT_EMOJI[averages?.topSentiment?.lable!]}</span>
+            <span className="text-[40px]">{SENTIMENT_EMOJI[averages?.topSentiment?.label!]}</span>
             <span className="text-sm text-gray-500">{averages?.topSentiment?.confidence}({(averages?.topSentiment?.confidence! * 100).toFixed(2)}%)</span>
 
 
@@ -184,7 +184,93 @@ export function Inference({ quota }: InferenceProps) {
           <span className="text-sm text-gray-400">Upload a video to see overall analysis</span>
         </div>
       )}
-      
+      <h2 className="mt-2 text-sm text-slate-800">Analysis of Utterances</h2>
+      {analysis ? (
+        <div className="flex flex-col gap-2">
+          {analysis?.utterances.map((utterance, i) => {
+            return (
+              <div
+                key={
+                  utterance.start_time.toString() +
+                  utterance.end_time.toString()
+                }
+                className="flex h-fit w-full flex-wrap justify-between gap-8 rounded-xl border border-gray-200 px-6 py-4 sm:gap-4"
+              >
+                {/* Time and text */}
+                <div className="flex w-full max-w-24 flex-col justify-center">
+                  <div className="text-sm font-semibold">
+                    {Number(utterance.start_time).toFixed(1)} -{" "}
+                    {Number(utterance.end_time).toFixed(1)}
+                  </div>
+                  <div className="mt-1 text-xs text-gray-500">
+                    {utterance.text}
+                  </div>
+                </div>
+
+                {/* Emotions */}
+                <div className="flex w-full max-w-48 flex-col gap-2">
+                  <span className="text-sm font-medium">Emotions</span>
+                  {utterance.emotions.map((emo, i) => {
+                    return (
+                      <div key={emo.label} className="flex items-center gap-2">
+                        <span className="w-16 whitespace-nowrap text-xs text-gray-500">
+                          {EMOTION_EMOJI[emo.label]} {emo.label}
+                        </span>
+                        <div className="flex-1">
+                          <div className="h-1 w-full rounded-full bg-gray-100">
+                            <div
+                              style={{ width: `${emo.confidence * 100}%` }}
+                              className="h-1 rounded-full bg-gray-800"
+                            ></div>
+                          </div>
+                          <span className="w-8 text-right text-xs">
+                            {(emo.confidence * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Sentiments */}
+                <div className="flex w-full max-w-48 flex-col gap-2">
+                  <span className="text-sm font-medium">Sentiments</span>
+                  {utterance.sentiments.map((sentiment, i) => {
+                    return (
+                      <div
+                        key={sentiment.label}
+                        className="flex items-center gap-2"
+                      >
+                        <span className="w-16 whitespace-nowrap text-xs text-gray-500">
+                          {SENTIMENT_EMOJI[sentiment.label]} {sentiment.label}
+                        </span>
+                        <div className="flex-1">
+                          <div className="h-1 w-full rounded-full bg-gray-100">
+                            <div
+                              style={{
+                                width: `${sentiment.confidence * 100}%`,
+                              }}
+                              className="h-1 rounded-full bg-gray-800"
+                            ></div>
+                          </div>
+                          <span className="w-8 text-right text-xs">
+                            {(sentiment.confidence * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) :(
+        <div className=" flex h-32 w-full items-center justify-center rounded-xl border border-dashed">
+          <span className="text-sm text-gray-400">Upload a video to see analysis results</span>
+        </div>
+      )}
+
       
 
     </div>
